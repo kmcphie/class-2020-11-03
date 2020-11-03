@@ -42,12 +42,29 @@ week_9 <- kenya %>%
 
 * Make a scatter plot of `poverty` on the y-axis and `distance` in the x-axis. Include a `geom_smooth()` with `method` set to "lm" and `se` equal to FALSE. Write a sentence to answer these questions:
 
+```{r}
+week_9 %>%
+  ggplot(aes(x = distance, y = poverty)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE, formula = y ~ x)
+```
+
+$$poverty_i = \beta_0 + \beta_1 distance_i + \epsilon_i$$
+
+
   + Does poverty cause distance? Or does distance cause poverty? Or both? Or neither?
   + How accurate is the model beyond 90 kilometers?  
   + Eye-balling the chart, how different is the poverty rate between two polling stations whose distance differs by 50 kilometers?
   
 * Fit a `stan_glm()` model which relates poverty to distance. Print a summary. (Hint: In order to see the coefficient of `distance`, you will probably need to use the `digits` argument to `print()`.) Interpret the meaning of the two important parameters.  
 
+```{r}
+fit_obj <- stan_glm(formula = poverty ~ distance,
+                    data = week_9,
+                    refresh = 0)
+
+print(fit_obj, digits = 5)
+```
 
 
 
@@ -58,8 +75,18 @@ week_9 <- kenya %>%
 
 * Provide the math for this model.
 
+$$reg\_chg_i = \beta_0 + \beta_1 treatment_i + \beta_2 poverty_i \\ + \beta_3 distance_i + \beta_4 pop\_density_i + \epsilon_i$$
+
 * Estimate the model. Assign the fitted model to `fit_2`. Interpret the important parameters of the model.
 
+```{r}
+fit_2 <- stan_glm(
+  formula = reg_chg ~ treatment + poverty + distance + pop_density,
+  refresh = 0,
+  data = week_9)
+
+print(fit_2, digits = 5)
+```
 
 
 ## Scene 3
